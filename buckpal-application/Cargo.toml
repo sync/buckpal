@@ -1,5 +1,5 @@
 [package]
-name = "buckpal-domain"
+name = "buckpal-application"
 version = "0.1.0"
 authors = ["Anthony Mittaz <sync@me.com>"]
 edition = "2018"

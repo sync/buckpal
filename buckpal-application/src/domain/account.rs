@@ -1,4 +1,4 @@
-use crate::activity_window::ActivityWindow;
+use crate::domain::activity_window::ActivityWindow;
 use rusty_money::{money, Money};
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -61,7 +61,7 @@ impl Account {
             None => return false,
         };
 
-        use crate::activity::Activity;
+        use crate::domain::activity::Activity;
         use chrono::Utc;
 
         let withdrawal = Activity::new(
@@ -85,7 +85,7 @@ impl Account {
 mod tests {
     use super::account_test_data::AccountBuilder;
     use super::{AccountId, ActivityWindow};
-    use crate::activity::activity_test_data::ActivityBuilder;
+    use crate::domain::activity::activity_test_data::ActivityBuilder;
     use rusty_money::{money, Money};
 
     #[test]
@@ -168,8 +168,8 @@ mod tests {
 #[cfg(test)]
 pub mod account_test_data {
     use super::{Account, AccountId};
-    use crate::activity::activity_test_data::ActivityBuilder;
-    use crate::activity_window::ActivityWindow;
+    use crate::domain::activity::activity_test_data::ActivityBuilder;
+    use crate::domain::activity_window::ActivityWindow;
     use rusty_money::{money, Money};
 
     pub struct AccountBuilder {

@@ -1,4 +1,4 @@
-use crate::account::AccountId;
+use crate::domain::account::AccountId;
 use chrono::{DateTime, Utc};
 use rusty_money::Money;
 

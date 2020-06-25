@@ -1,5 +1,5 @@
-use crate::account::AccountId;
-use crate::activity::Activity;
+use crate::domain::account::AccountId;
+use crate::domain::activity::Activity;
 use chrono::{DateTime, Utc};
 use rusty_money::{money, Money};
 
@@ -72,7 +72,7 @@ impl ActivityWindow {
 #[cfg(test)]
 mod tests {
     use super::{AccountId, ActivityWindow};
-    use crate::activity::activity_test_data::ActivityBuilder;
+    use crate::domain::activity::activity_test_data::ActivityBuilder;
     use chrono::{DateTime, NaiveDate, Utc};
     use rusty_money::{money, Money};
 
