@@ -18,7 +18,7 @@ pub struct Account {
 impl Account {
     /// Creates an {@link Account} entity without an ID. Use to create a new entity that is not yet
     /// persisted.
-    pub fn without_id(baseline_balance: Money, activity_window: ActivityWindow) -> Self {
+    pub fn new_without_id(baseline_balance: Money, activity_window: ActivityWindow) -> Self {
         Self {
             id: None,
             baseline_balance,
@@ -27,7 +27,7 @@ impl Account {
     }
 
     /// Creates an {@link Account} entity with an ID. Use to reconstitute a persisted entity.
-    pub fn with_id(
+    pub fn new_with_id(
         account_id: AccountId,
         baseline_balance: Money,
         activity_window: ActivityWindow,
@@ -93,18 +93,18 @@ mod tests {
         let account_id = AccountId(1);
         let activity_window = ActivityWindow::new(vec![
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(999, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(999, "AUD"))
                 .build(),
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(1, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(1, "AUD"))
                 .build(),
         ]);
         let account = AccountBuilder::default_account()
-            .with_account_id(account_id)
-            .with_baseline_balance(money!(555, "AUD"))
-            .with_activity_window(activity_window)
+            .with_account_id(&account_id)
+            .with_baseline_balance(&money!(555, "AUD"))
+            .with_activity_window(&activity_window)
             .build();
 
         let balance = account.calculate_balance();
@@ -117,18 +117,18 @@ mod tests {
         let account_id = AccountId(1);
         let activity_window = ActivityWindow::new(vec![
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(999, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(999, "AUD"))
                 .build(),
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(1, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(1, "AUD"))
                 .build(),
         ]);
         let mut account = AccountBuilder::default_account()
-            .with_account_id(account_id.clone())
-            .with_baseline_balance(money!(555, "AUD"))
-            .with_activity_window(activity_window)
+            .with_account_id(&account_id.clone())
+            .with_baseline_balance(&money!(555, "AUD"))
+            .with_activity_window(&activity_window)
             .build();
 
         let success = account.withdraw(&money!("555", "AUD"), &AccountId(99));
@@ -143,18 +143,18 @@ mod tests {
         let account_id = AccountId(1);
         let activity_window = ActivityWindow::new(vec![
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(999, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(999, "AUD"))
                 .build(),
             ActivityBuilder::default_activity()
-                .with_target_account(account_id.clone())
-                .with_money(money!(1, "AUD"))
+                .with_target_account(&account_id)
+                .with_money(&money!(1, "AUD"))
                 .build(),
         ]);
         let mut account = AccountBuilder::default_account()
-            .with_account_id(account_id)
-            .with_baseline_balance(money!(555, "AUD"))
-            .with_activity_window(activity_window)
+            .with_account_id(&account_id)
+            .with_baseline_balance(&money!(555, "AUD"))
+            .with_activity_window(&activity_window)
             .build();
 
         let success = account.withdraw(&money!("1556", "AUD"), &AccountId(99));
@@ -182,32 +182,32 @@ pub mod account_test_data {
                 ActivityBuilder::default_activity().build(),
                 ActivityBuilder::default_activity().build(),
             ]);
-            let account = Account::with_id(AccountId(42), money!(999, "AUD"), activity_window);
+            let account = Account::new_with_id(AccountId(42), money!(999, "AUD"), activity_window);
 
             Self { account }
         }
 
-        pub fn with_account_id(&mut self, account_id: AccountId) -> &mut Self {
+        pub fn with_account_id(&mut self, account_id: &AccountId) -> &mut Self {
             let mut account = self.account.clone();
-            account.id = Some(account_id);
+            account.id = Some(account_id.clone());
 
             let mut new = self;
             new.account = account;
             new
         }
 
-        pub fn with_baseline_balance(&mut self, baseline_balance: Money) -> &mut Self {
+        pub fn with_baseline_balance(&mut self, baseline_balance: &Money) -> &mut Self {
             let mut account = self.account.clone();
-            account.baseline_balance = baseline_balance;
+            account.baseline_balance = baseline_balance.clone();
 
             let mut new = self;
             new.account = account;
             new
         }
 
-        pub fn with_activity_window(&mut self, activity_window: ActivityWindow) -> &mut Self {
+        pub fn with_activity_window(&mut self, activity_window: &ActivityWindow) -> &mut Self {
             let mut account = self.account.clone();
-            account.activity_window = activity_window;
+            account.activity_window = activity_window.clone();
 
             let mut new = self;
             new.account = account;

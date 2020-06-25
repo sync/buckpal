@@ -63,36 +63,36 @@ pub mod activity_test_data {
             Self { activity }
         }
 
-        pub fn with_timestamp(&mut self, timestamp: DateTime<Utc>) -> &mut Self {
+        pub fn with_timestamp(&mut self, timestamp: &DateTime<Utc>) -> &mut Self {
             let mut activity = self.activity.clone();
-            activity.timestamp = timestamp;
+            activity.timestamp = timestamp.clone();
 
             let mut new = self;
             new.activity = activity;
             new
         }
 
-        pub fn with_source_account(&mut self, source_account_id: AccountId) -> &mut Self {
+        pub fn with_source_account(&mut self, source_account_id: &AccountId) -> &mut Self {
             let mut activity = self.activity.clone();
-            activity.source_account_id = source_account_id;
+            activity.source_account_id = source_account_id.clone();
 
             let mut new = self;
             new.activity = activity;
             new
         }
 
-        pub fn with_target_account(&mut self, target_account_id: AccountId) -> &mut Self {
+        pub fn with_target_account(&mut self, target_account_id: &AccountId) -> &mut Self {
             let mut activity = self.activity.clone();
-            activity.target_account_id = target_account_id;
+            activity.target_account_id = target_account_id.clone();
 
             let mut new = self;
             new.activity = activity;
             new
         }
 
-        pub fn with_money(&mut self, money: Money) -> &mut Self {
+        pub fn with_money(&mut self, money: &Money) -> &mut Self {
             let mut activity = self.activity.clone();
-            activity.money = money;
+            activity.money = money.clone();
 
             let mut new = self;
             new.activity = activity;

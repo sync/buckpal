@@ -91,15 +91,15 @@ mod tests {
     #[test]
     fn calculates_start_timestamp() {
         let activity_now = ActivityBuilder::default_activity()
-            .with_timestamp(start_date())
+            .with_timestamp(&start_date())
             .build();
 
         let activity_between = ActivityBuilder::default_activity()
-            .with_timestamp(in_between_date())
+            .with_timestamp(&in_between_date())
             .build();
 
         let activity_tomorrow = ActivityBuilder::default_activity()
-            .with_timestamp(end_date())
+            .with_timestamp(&end_date())
             .build();
 
         let window = ActivityWindow::new(vec![activity_now, activity_between, activity_tomorrow]);
@@ -110,15 +110,15 @@ mod tests {
     #[test]
     fn calculates_end_timestamp() {
         let activity_now = ActivityBuilder::default_activity()
-            .with_timestamp(start_date())
+            .with_timestamp(&start_date())
             .build();
 
         let activity_between = ActivityBuilder::default_activity()
-            .with_timestamp(in_between_date())
+            .with_timestamp(&in_between_date())
             .build();
 
         let activity_tomorrow = ActivityBuilder::default_activity()
-            .with_timestamp(end_date())
+            .with_timestamp(&end_date())
             .build();
 
         let window = ActivityWindow::new(vec![activity_now, activity_between, activity_tomorrow]);
@@ -133,19 +133,19 @@ mod tests {
 
         let window = ActivityWindow::new(vec![
             ActivityBuilder::default_activity()
-                .with_source_account(account1.clone())
-                .with_target_account(account2.clone())
-                .with_money(money!(999, "AUD"))
+                .with_source_account(&account1)
+                .with_target_account(&account2)
+                .with_money(&money!(999, "AUD"))
                 .build(),
             ActivityBuilder::default_activity()
-                .with_source_account(account1.clone())
-                .with_target_account(account2.clone())
-                .with_money(money!(1, "AUD"))
+                .with_source_account(&account1)
+                .with_target_account(&account2)
+                .with_money(&money!(1, "AUD"))
                 .build(),
             ActivityBuilder::default_activity()
-                .with_source_account(account2.clone())
-                .with_target_account(account1.clone())
-                .with_money(money!(500, "AUD"))
+                .with_source_account(&account2)
+                .with_target_account(&account1)
+                .with_money(&money!(500, "AUD"))
                 .build(),
         ]);
 

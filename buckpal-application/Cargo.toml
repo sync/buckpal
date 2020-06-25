@@ -9,3 +9,5 @@ edition = "2018"
 [dependencies]
 chrono = "0.4"
 rusty-money  = "0.3"
+thiserror = "1.0.20"
+anyhow = "1.0.31"

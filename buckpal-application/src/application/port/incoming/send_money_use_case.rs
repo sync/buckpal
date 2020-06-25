@@ -18,5 +18,5 @@ impl SendMoneyCommand {
 }
 
 pub trait SendMoneyUseCase {
-    fn send_money(command: SendMoneyCommand) -> bool;
+    fn send_money(&self, command: &SendMoneyCommand) -> bool;
 }
