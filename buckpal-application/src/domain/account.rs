@@ -15,8 +15,9 @@ pub struct Account {
     pub activity_window: ActivityWindow,
 }
 
+#[cfg_attr(test, mocktopus::macros::mockable)]
 impl Account {
-    /// Creates an {@link Account} entity without an ID. Use to create a new entity that is not yet
+    /// Creates an Account entity without an ID. Use to create a new entity that is not yet
     /// persisted.
     pub fn new_without_id(baseline_balance: Money, activity_window: ActivityWindow) -> Self {
         Self {
@@ -26,7 +27,7 @@ impl Account {
         }
     }
 
-    /// Creates an {@link Account} entity with an ID. Use to reconstitute a persisted entity.
+    /// Creates an Account entity with an ID. Use to reconstitute a persisted entity.
     pub fn new_with_id(
         account_id: AccountId,
         baseline_balance: Money,
@@ -78,6 +79,29 @@ impl Account {
     fn may_withdraw(&self, money: &Money) -> bool {
         let balance = self.calculate_balance() - money.clone();
         balance.is_zero() || balance.is_positive()
+    }
+
+    /// Tries to deposit a certain amount of money to this account.
+    /// If sucessful, creates a new activity with a positive value.
+    /// return true if the deposit was successful, false if not.
+    pub fn deposit(&mut self, money: &Money, source_account_id: &AccountId) -> bool {
+        let id = match self.id.clone() {
+            Some(id) => id,
+            None => return false,
+        };
+
+        use crate::domain::activity::Activity;
+        use chrono::Utc;
+
+        let deposit = Activity::new(
+            id.clone(),
+            source_account_id.clone(),
+            id,
+            Utc::now(),
+            money.clone(),
+        );
+        self.activity_window.add_activity(&deposit);
+        true
     }
 }
 
@@ -131,7 +155,7 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let success = account.withdraw(&money!("555", "AUD"), &AccountId(99));
+        let success = account.withdraw(&money!(555, "AUD"), &AccountId(99));
 
         assert_eq!(success, true);
         assert_eq!(account.activity_window.activities.len(), 3);
@@ -157,11 +181,37 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let success = account.withdraw(&money!("1556", "AUD"), &AccountId(99));
+        let success = account.withdraw(&money!(1556, "AUD"), &AccountId(99));
 
         assert_eq!(success, false);
         assert_eq!(account.activity_window.activities.len(), 2);
         assert_eq!(account.calculate_balance(), money!(1555, "AUD"));
+    }
+
+    #[test]
+    fn deposit_succeeds() {
+        let account_id = AccountId(1);
+        let activity_window = ActivityWindow::new(vec![
+            ActivityBuilder::default_activity()
+                .with_target_account(&account_id)
+                .with_money(&money!(999, "AUD"))
+                .build(),
+            ActivityBuilder::default_activity()
+                .with_target_account(&account_id)
+                .with_money(&money!(1, "AUD"))
+                .build(),
+        ]);
+        let mut account = AccountBuilder::default_account()
+            .with_account_id(&account_id.clone())
+            .with_baseline_balance(&money!(555, "AUD"))
+            .with_activity_window(&activity_window)
+            .build();
+
+        let success = account.deposit(&money!(445, "AUD"), &AccountId(99));
+
+        assert_eq!(success, true);
+        assert_eq!(account.activity_window.activities.len(), 3);
+        assert_eq!(account.calculate_balance(), money!(2000, "AUD"));
     }
 }
 

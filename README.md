@@ -11,4 +11,13 @@ It implements a domain-centric "Hexagonal" approach of a common web application 
 
 ## Prerequisites
 
-* Rust
+* Rust Nightly (needed for our test mocks on Struct functions)
+
+## Rust nightly
+
+```sh
+rustup toolchain install nightly
+
+cd buckpal;
+rustup override set nightly
+```

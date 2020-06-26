@@ -1,5 +1,6 @@
 use rusty_money::{money, Money};
 
+#[derive(Debug, Eq, PartialEq, Clone, Default)]
 pub struct MoneyTransferProperties {}
 
 impl MoneyTransferProperties {
