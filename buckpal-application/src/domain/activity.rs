@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use rusty_money::Money;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
-pub struct ActivityId(i32);
+pub struct ActivityId(pub i32);
 
 /// A money transfer activity between Accounts
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -31,6 +31,24 @@ impl Activity {
     ) -> Self {
         Self {
             id: None,
+            owner_account_id,
+            source_account_id,
+            target_account_id,
+            timestamp,
+            money,
+        }
+    }
+
+    pub fn new_with_id(
+        activity_id: Option<ActivityId>,
+        owner_account_id: AccountId,
+        source_account_id: AccountId,
+        target_account_id: AccountId,
+        timestamp: DateTime<Utc>,
+        money: Money,
+    ) -> Self {
+        Self {
+            id: activity_id,
             owner_account_id,
             source_account_id,
             target_account_id,
