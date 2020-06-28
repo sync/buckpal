@@ -6,19 +6,20 @@ use crate::application::port::outgoing::{
 use crate::application::service::error::ServiceError;
 use crate::application::service::money_transfer_properties::MoneyTransferProperties;
 use anyhow::{anyhow, Result};
+use async_trait::async_trait;
 
 pub struct SendMoneyService<'a> {
-    load_account_port: Box<dyn LoadAccountPort + 'a>,
-    account_lock: Box<dyn AccountLock + 'a>,
-    update_account_state_port: Box<dyn UpdateAccountStatePort + 'a>,
+    load_account_port: Box<dyn LoadAccountPort + Send + Sync + 'a>,
+    account_lock: Box<dyn AccountLock + Send + Sync + 'a>,
+    update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync + 'a>,
     money_transfer_properties: MoneyTransferProperties,
 }
 
 impl<'a> SendMoneyService<'a> {
     pub fn new(
-        load_account_port: Box<dyn LoadAccountPort + 'a>,
-        account_lock: Box<dyn AccountLock + 'a>,
-        update_account_state_port: Box<dyn UpdateAccountStatePort + 'a>,
+        load_account_port: Box<dyn LoadAccountPort + Send + Sync + 'a>,
+        account_lock: Box<dyn AccountLock + Send + Sync + 'a>,
+        update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync + 'a>,
         money_transfer_properties: MoneyTransferProperties,
     ) -> Self {
         Self {
@@ -30,23 +31,26 @@ impl<'a> SendMoneyService<'a> {
     }
 }
 
+#[async_trait]
 impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
-    fn send_money(&self, command: &SendMoneyCommand) -> bool {
+    async fn send_money(&self, command: &SendMoneyCommand) -> Result<bool> {
         use chrono::{Duration, Utc};
 
         if self.check_threshold(command).is_err() {
-            return false;
+            return Ok(false);
         }
 
         let baseline_date = Utc::now() - Duration::days(10);
 
         let mut source_account = self
             .load_account_port
-            .load_account(&command.source_account_id, &baseline_date);
+            .load_account(&command.source_account_id, &baseline_date)
+            .await?;
 
         let mut target_account = self
             .load_account_port
-            .load_account(&command.target_account_id, &baseline_date);
+            .load_account(&command.target_account_id, &baseline_date)
+            .await?;
 
         let source_account_id = source_account
             .clone()
@@ -60,25 +64,27 @@ impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
         self.account_lock.lock_account(&source_account_id);
         if !source_account.withdraw(&command.money, &target_account_id) {
             self.account_lock.release_account(&source_account_id);
-            return false;
+            return Ok(false);
         }
 
         self.account_lock.lock_account(&target_account_id);
         if !target_account.deposit(&command.money, &source_account_id) {
             self.account_lock.release_account(&source_account_id);
             self.account_lock.release_account(&target_account_id);
-            return false;
+            return Ok(false);
         }
 
         self.update_account_state_port
-            .update_activities(&source_account);
+            .update_activities(&source_account)
+            .await?;
         self.update_account_state_port
-            .update_activities(&target_account);
+            .update_activities(&target_account)
+            .await?;
 
         self.account_lock.release_account(&source_account_id);
         self.account_lock.release_account(&target_account_id);
 
-        true
+        Ok(true)
     }
 }
 
@@ -103,21 +109,25 @@ mod tests {
         SendMoneyCommand, SendMoneyUseCase,
     };
     use crate::application::port::outgoing::{
-        account_lock::MockAccountLock, load_account_port::MockLoadAccountPort,
-        update_account_state_port::MockUpdateAccountStatePort,
+        account_lock::MockAccountLock, load_account_port::LoadAccountPort,
+        update_account_state_port::UpdateAccountStatePort,
     };
     use crate::application::service::money_transfer_properties::MoneyTransferProperties;
     use crate::domain::account::account_test_data::AccountBuilder;
     use crate::domain::account::{Account, AccountId};
+    use anyhow::anyhow;
+    use anyhow::Result;
+    use async_trait::async_trait;
+    use chrono::{DateTime, Utc};
     use mockall::*;
     use mocktopus::mocking::*;
     use rusty_money::{money, Money};
 
-    #[test]
-    fn given_withdrawal_fails_then_only_source_account_is_locked_and_released() {
+    #[async_std::test]
+    async fn given_withdrawal_fails_then_only_source_account_is_locked_and_released() {
         let mut load_account_port = MockLoadAccountPort::new();
         let mut account_lock = MockAccountLock::new();
-        let update_account_state_port = MockUpdateAccountStatePort::new();
+        let update_account_state_port = MockUpdateAccountStatePort::default();
         let money_transfer_properties = MoneyTransferProperties::default();
 
         let source_account_id = AccountId(41);
@@ -156,15 +166,15 @@ mod tests {
             money_transfer_properties,
         );
 
-        let success = send_money_service.send_money(&command);
+        let success = send_money_service.send_money(&command).await.unwrap();
         assert_eq!(success, false);
     }
 
-    #[test]
-    fn transation_succeeds() {
+    #[async_std::test]
+    async fn transation_succeeds() {
         let mut load_account_port = MockLoadAccountPort::new();
         let mut account_lock = MockAccountLock::new();
-        let mut update_account_state_port = MockUpdateAccountStatePort::new();
+        let mut update_account_state_port = MockUpdateAccountStatePort::default();
         let money_transfer_properties = MoneyTransferProperties::default();
 
         let source_account = given_source_account(&mut load_account_port);
@@ -212,7 +222,7 @@ mod tests {
             money_transfer_properties,
         );
 
-        let success = send_money_service.send_money(&command);
+        let success = send_money_service.send_money(&command).await.unwrap();
         assert_eq!(success, true);
     }
 
@@ -220,16 +230,7 @@ mod tests {
         account_ids: Vec<&AccountId>,
         update_account_state_port_mock: &mut MockUpdateAccountStatePort,
     ) {
-        let mut cloned = vec![];
-        for account_id in account_ids.clone() {
-            cloned.push(account_id.clone());
-        }
-
-        update_account_state_port_mock
-            .expect_update_activities()
-            .withf(move |account| cloned.contains(&&account.clone().id.take().unwrap()))
-            .times(account_ids.len())
-            .returning(|_| ());
+        update_account_state_port_mock.expect_update_activities(account_ids);
     }
 
     fn given_target_account(load_account_port_mock: &mut MockLoadAccountPort) -> Account {
@@ -248,13 +249,9 @@ mod tests {
             .with_account_id(&id)
             .build();
 
-        let cloned = source_account.clone();
-        load_account_port_mock
-            .expect_load_account()
-            .with(predicate::eq(id.clone()), predicate::always())
-            .returning(move |_account_id, _baseline_date| source_account.clone());
+        load_account_port_mock.expect_load_account(&source_account);
 
-        cloned
+        source_account
     }
 
     fn given_withdrawal_will_succeed(account: &Account) {
@@ -288,5 +285,60 @@ mod tests {
                 MockResult::Continue((curr, money, target))
             }
         })
+    }
+
+    #[derive(Debug, Default)]
+    struct MockUpdateAccountStatePort {}
+
+    impl MockUpdateAccountStatePort {
+        fn expect_update_activities(&mut self, _account_ids: Vec<&AccountId>) {
+            // here eventually need to check that update_activities  got call with those ids
+        }
+    }
+
+    #[async_trait]
+    impl UpdateAccountStatePort for MockUpdateAccountStatePort {
+        async fn update_activities(&self, _account: &Account) -> Result<()> {
+            // do nothing here
+            Ok(())
+        }
+    }
+
+    #[derive(Debug)]
+    struct MockLoadAccountPort {
+        available_accounts: Vec<Account>,
+    }
+
+    impl MockLoadAccountPort {
+        fn new() -> Self {
+            Self {
+                available_accounts: vec![],
+            }
+        }
+
+        fn expect_load_account(&mut self, account: &Account) {
+            self.available_accounts.push(account.clone());
+        }
+    }
+
+    #[async_trait]
+    impl LoadAccountPort for MockLoadAccountPort {
+        async fn load_account(
+            &self,
+            account_id: &AccountId,
+            _baseline_date: &DateTime<Utc>,
+        ) -> Result<Account> {
+            let account = self
+                .available_accounts
+                .iter()
+                .find(|account| match account.id.clone() {
+                    Some(id) => id == *account_id,
+                    None => false,
+                });
+
+            account
+                .map(|account| account.clone())
+                .ok_or(anyhow!("No matching account found from stub"))
+        }
     }
 }

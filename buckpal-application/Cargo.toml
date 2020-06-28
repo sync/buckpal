@@ -12,7 +12,9 @@ rusty-money  = "0.3"
 thiserror = "1.0.20"
 anyhow = "1.0.31"
 cfg-if = "0.1.10"
+async-trait = "0.1.36"
 
 [dev-dependencies]
 mockall = "0.7.1"
 mocktopus = "0.7.5"
+async-std = { version = "1.6.2", features = ["attributes"] }

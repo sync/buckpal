@@ -1,4 +1,6 @@
 use crate::domain::account::AccountId;
+use anyhow::Result;
+use async_trait::async_trait;
 use rusty_money::Money;
 
 pub struct SendMoneyCommand {
@@ -17,6 +19,7 @@ impl SendMoneyCommand {
     }
 }
 
+#[async_trait]
 pub trait SendMoneyUseCase {
-    fn send_money(&self, command: &SendMoneyCommand) -> bool;
+    async fn send_money(&self, command: &SendMoneyCommand) -> Result<bool>;
 }

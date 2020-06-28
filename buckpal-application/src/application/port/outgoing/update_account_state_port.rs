@@ -1,6 +1,8 @@
 use crate::domain::account::Account;
+use anyhow::Result;
+use async_trait::async_trait;
 
-#[cfg_attr(test, mockall::automock)]
+#[async_trait]
 pub trait UpdateAccountStatePort {
-    fn update_activities(&self, account: &Account);
+    async fn update_activities(&self, account: &Account) -> Result<()>;
 }
