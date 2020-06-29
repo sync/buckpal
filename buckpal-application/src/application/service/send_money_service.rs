@@ -115,6 +115,7 @@ mod tests {
     use crate::application::service::money_transfer_properties::MoneyTransferProperties;
     use crate::domain::account::account_test_data::AccountBuilder;
     use crate::domain::account::{Account, AccountId};
+    use crate::domain::activity::Activity;
     use anyhow::anyhow;
     use anyhow::Result;
     use async_trait::async_trait;
@@ -298,9 +299,9 @@ mod tests {
 
     #[async_trait]
     impl UpdateAccountStatePort for MockUpdateAccountStatePort {
-        async fn update_activities(&self, _account: &Account) -> Result<()> {
+        async fn update_activities(&self, _account: &Account) -> Result<Vec<Activity>> {
             // do nothing here
-            Ok(())
+            Ok(vec![])
         }
     }
 
