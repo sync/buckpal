@@ -215,7 +215,6 @@ mod tests {
     }
 }
 
-#[cfg(test)]
 pub mod account_test_data {
     use super::{Account, AccountId};
     use crate::domain::activity::activity_test_data::ActivityBuilder;

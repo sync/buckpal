@@ -58,7 +58,6 @@ impl Activity {
     }
 }
 
-#[cfg(test)]
 pub mod activity_test_data {
     use super::{AccountId, Activity};
     use chrono::{DateTime, Utc};
