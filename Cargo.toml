@@ -2,4 +2,5 @@
 
 members = [
     "buckpal-application",
+    "adapters/buckpal-persistence"
 ]

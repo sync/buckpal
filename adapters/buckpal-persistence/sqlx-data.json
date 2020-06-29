@@ -1,0 +1,246 @@
+{
+  "db": "PostgreSQL",
+  "038e36aec513736597fa7cb9b44ee46a3e642fb48c274300cb5de904ab733f9b": {
+    "query": "\n                DELETE FROM activity WHERE id IN ($1)\n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": []
+    }
+  },
+  "22f63a07db1b4a83f5f42b06d789d6b4f5440ed69b4016d66aefd1fc3535bc2e": {
+    "query": "\n                SELECT\n                        COUNT (*) AS total\n                FROM\n                        activity\n           ",
+    "describe": {
+      "params": [],
+      "columns": [
+        {
+          "name": "total",
+          "type_info": "Int8",
+          "not_null": null
+        }
+      ]
+    }
+  },
+  "2c8bec132d99ac60c1177aea022ab79eb15b2222e65d983ab76d227fac22b594": {
+    "query": "\n                DELETE FROM account WHERE id = $1; \n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": []
+    }
+  },
+  "2d3bbb77efa214ccfec79394fa8fe6fdbb7a41797e6fd14a219e6a548f2dc564": {
+    "query": "\n                DELETE FROM activity WHERE id = $1\n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": []
+    }
+  },
+  "4967797caaa627abae987cec72b908841bf986207ddb3ae9bcd8b18b376ebd17": {
+    "query": "\n                SELECT \n                        id,\n                        timestamp,\n                        owner_account_id,\n                        source_account_id,\n                        target_account_id,\n                        amount\n                FROM \n                        activity\n                WHERE \n                        owner_account_id = $1\n                AND\n                        timestamp >= $2\n            ",
+    "describe": {
+      "params": [
+        "Int4",
+        "Timestamptz"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "timestamp",
+          "type_info": "Timestamptz",
+          "not_null": true
+        },
+        {
+          "name": "owner_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "source_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "target_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "amount",
+          "type_info": "Int8",
+          "not_null": true
+        }
+      ]
+    }
+  },
+  "69bebe625b3f88a9ffc23d82dd20f9884bffb9f81b9ab5d97d0d74ed84c14fe5": {
+    "query": "\n                SELECT\n                        SUM (amount) AS total\n                FROM\n                        activity\n                WHERE\n                        target_account_id = $1\n                AND \n                        owner_account_id = $1\n                AND     \n                        timestamp < $2\n           ",
+    "describe": {
+      "params": [
+        "Int4",
+        "Timestamptz"
+      ],
+      "columns": [
+        {
+          "name": "total",
+          "type_info": "Numeric",
+          "not_null": null
+        }
+      ]
+    }
+  },
+  "9f3e43371fca6ebce6106f651b889c82dbf5e49d971050e14b71170b751402a4": {
+    "query": "\n                DELETE FROM account WHERE id = $1 \n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": []
+    }
+  },
+  "cae54719611a87631803d65128c7379fbd80843c08db932aced52957f31ea268": {
+    "query": "\n                INSERT INTO account DEFAULT VALUES RETURNING id \n            ",
+    "describe": {
+      "params": [],
+      "columns": [
+        {
+          "name": "id",
+          "type_info": "Int4",
+          "not_null": true
+        }
+      ]
+    }
+  },
+  "dc77cfbbb1078774c26909355c8986b4baa3fa9f684e57202f921a254d200f33": {
+    "query": "\n                SELECT\n                        id \n                FROM \n                        account\n                WHERE \n                        id = $1\n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type_info": "Int4",
+          "not_null": true
+        }
+      ]
+    }
+  },
+  "e6f6466188b9fefccf336142c387c04e90fa9701b3b075631005aec39619a0b6": {
+    "query": "\n                SELECT\n                        SUM (amount) AS total\n                FROM\n                        activity\n                WHERE\n                        source_account_id = $1\n                AND \n                        owner_account_id = $1\n                AND     \n                        timestamp < $2\n           ",
+    "describe": {
+      "params": [
+        "Int4",
+        "Timestamptz"
+      ],
+      "columns": [
+        {
+          "name": "total",
+          "type_info": "Numeric",
+          "not_null": null
+        }
+      ]
+    }
+  },
+  "e7fe4493b66f61ccb48943ed6569455e3c258c74b8f7a9fe16d96d4af502e07f": {
+    "query": "\n                        INSERT INTO \n                                    activity (timestamp, owner_account_id, source_account_id, target_account_id, amount)\n                        VALUES \n                                    ($1, $2, $3, $4, $5)\n                        RETURNING \n                                    id, timestamp, owner_account_id, source_account_id, target_account_id, amount \n                    ",
+    "describe": {
+      "params": [
+        "Timestamptz",
+        "Int4",
+        "Int4",
+        "Int4",
+        "Int8"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "timestamp",
+          "type_info": "Timestamptz",
+          "not_null": true
+        },
+        {
+          "name": "owner_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "source_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "target_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "amount",
+          "type_info": "Int8",
+          "not_null": true
+        }
+      ]
+    }
+  },
+  "eb366dee13ad5dea83b55a66a3efe6b6ff25fbb3c86e14716396a2040a7ced04": {
+    "query": "\n                DELETE FROM activity WHERE id IN ($1) \n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": []
+    }
+  },
+  "fec96025fba091cb33f117ec514097bc2aba0f921d43c23ab95a9b043c56a47f": {
+    "query": "\n                SELECT \n                        id,\n                        timestamp,\n                        owner_account_id,\n                        source_account_id,\n                        target_account_id,\n                        amount\n                FROM \n                        activity\n                WHERE \n                        id = $1\n            ",
+    "describe": {
+      "params": [
+        "Int4"
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "timestamp",
+          "type_info": "Timestamptz",
+          "not_null": true
+        },
+        {
+          "name": "owner_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "source_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "target_account_id",
+          "type_info": "Int4",
+          "not_null": true
+        },
+        {
+          "name": "amount",
+          "type_info": "Int8",
+          "not_null": true
+        }
+      ]
+    }
+  }
+}

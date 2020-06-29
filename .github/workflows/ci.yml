@@ -5,10 +5,27 @@ on:
     branches: [master]
   pull_request:
 
+env:
+  DATABASE_URL: postgres://buckpal:buckpal@localhost/buckpal_test
+
 jobs:
   ci:
     name: Test & checks
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: buckpal
+          POSTGRES_PASSWORD: buckpal
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +37,21 @@ jobs:
           toolchain: nightly
           components: rustfmt, clippy
           override: true
+
+      - name: Setup postgres and sqlx
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libpq-dev
+          cargo install sqlx-cli --git https://github.com/launchbadge/sqlx.git --no-default-features --features postgres
+
+      - name: Create test db
+        run: createdb -h localhost -U buckpal buckpal_test
+        env:
+          PGUSER: buckpal
+          PGPASSWORD: buckpal
+
+      - name: Create test db
+        run: sqlx migrate run
 
       - name: Cache cargo registry
         uses: actions/cache@v1
