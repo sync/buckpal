@@ -21,5 +21,5 @@ impl SendMoneyCommand {
 
 #[async_trait]
 pub trait SendMoneyUseCase {
-    async fn send_money(&self, command: &SendMoneyCommand) -> Result<bool>;
+    async fn send_money(&self, command: &SendMoneyCommand) -> Result<()>;
 }

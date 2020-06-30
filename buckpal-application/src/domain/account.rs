@@ -1,5 +1,15 @@
 use crate::domain::activity_window::ActivityWindow;
+use anyhow::{anyhow, Result};
 use rusty_money::{money, Money};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum AccountError {
+    #[error("May withdraw failed with the following balance: `{0}`")]
+    MayWithdrawFailed(i64),
+    #[error("Account id is invalid, can't `{0}`")]
+    InvalidAccountId(String),
+}
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct AccountId(pub i32);
@@ -52,14 +62,16 @@ impl Account {
 
     /// Tries to withdraw a certain amount of money from this account.
     /// If successful, creates a new activity with a negative value.
-    pub fn withdraw(&mut self, money: &Money, target_account_id: &AccountId) -> bool {
-        if !self.may_withdraw(&money) {
-            return false;
-        }
+    pub fn withdraw(&mut self, money: &Money, target_account_id: &AccountId) -> Result<()> {
+        self.may_withdraw(&money)?;
 
         let id = match self.id.clone() {
             Some(id) => id,
-            None => return false,
+            None => {
+                return Err(anyhow!(AccountError::InvalidAccountId(String::from(
+                    "withdraw"
+                ))))
+            }
         };
 
         use crate::domain::activity::Activity;
@@ -73,21 +85,35 @@ impl Account {
             money.clone(),
         );
         self.activity_window.add_activity(&withdrawal);
-        true
+        Ok(())
     }
 
-    fn may_withdraw(&self, money: &Money) -> bool {
+    fn may_withdraw(&self, money: &Money) -> Result<()> {
         let balance = self.calculate_balance() - money.clone();
-        balance.is_zero() || balance.is_positive()
+
+        if balance.is_zero() || balance.is_positive() {
+            Ok(())
+        } else {
+            use rust_decimal::prelude::*;
+
+            // here we want to explode, no way to recover
+            Err(anyhow!(AccountError::MayWithdrawFailed(
+                balance.amount().to_i64().unwrap()
+            )))
+        }
     }
 
     /// Tries to deposit a certain amount of money to this account.
     /// If sucessful, creates a new activity with a positive value.
     /// return true if the deposit was successful, false if not.
-    pub fn deposit(&mut self, money: &Money, source_account_id: &AccountId) -> bool {
+    pub fn deposit(&mut self, money: &Money, source_account_id: &AccountId) -> Result<()> {
         let id = match self.id.clone() {
             Some(id) => id,
-            None => return false,
+            None => {
+                return Err(anyhow!(AccountError::InvalidAccountId(String::from(
+                    "withdraw"
+                ))))
+            }
         };
 
         use crate::domain::activity::Activity;
@@ -101,7 +127,7 @@ impl Account {
             money.clone(),
         );
         self.activity_window.add_activity(&deposit);
-        true
+        Ok(())
     }
 }
 
@@ -155,7 +181,9 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let success = account.withdraw(&money!(555, "AUD"), &AccountId(99));
+        let success = account
+            .withdraw(&money!(555, "AUD"), &AccountId(99))
+            .is_ok();
 
         assert_eq!(success, true);
         assert_eq!(account.activity_window.activities.len(), 3);
@@ -181,7 +209,9 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let success = account.withdraw(&money!(1556, "AUD"), &AccountId(99));
+        let success = account
+            .withdraw(&money!(1556, "AUD"), &AccountId(99))
+            .is_ok();
 
         assert_eq!(success, false);
         assert_eq!(account.activity_window.activities.len(), 2);
@@ -207,7 +237,7 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let success = account.deposit(&money!(445, "AUD"), &AccountId(99));
+        let success = account.deposit(&money!(445, "AUD"), &AccountId(99)).is_ok();
 
         assert_eq!(success, true);
         assert_eq!(account.activity_window.activities.len(), 3);

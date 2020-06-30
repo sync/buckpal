@@ -33,11 +33,11 @@ impl<'a> SendMoneyService<'a> {
 
 #[async_trait]
 impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
-    async fn send_money(&self, command: &SendMoneyCommand) -> Result<bool> {
+    async fn send_money(&self, command: &SendMoneyCommand) -> Result<()> {
         use chrono::{Duration, Utc};
 
-        if self.check_threshold(command).is_err() {
-            return Ok(false);
+        if let Err(err) = self.check_threshold(command) {
+            return Err(err);
         }
 
         let baseline_date = Utc::now() - Duration::days(10);
@@ -62,16 +62,16 @@ impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
             .expect("expected target account ID not to be empty");
 
         self.account_lock.lock_account(&source_account_id);
-        if !source_account.withdraw(&command.money, &target_account_id) {
+        if let Err(err) = source_account.withdraw(&command.money, &target_account_id) {
             self.account_lock.release_account(&source_account_id);
-            return Ok(false);
+            return Err(err);
         }
 
         self.account_lock.lock_account(&target_account_id);
-        if !target_account.deposit(&command.money, &source_account_id) {
+        if let Err(err) = target_account.deposit(&command.money, &source_account_id) {
             self.account_lock.release_account(&source_account_id);
             self.account_lock.release_account(&target_account_id);
-            return Ok(false);
+            return Err(err);
         }
 
         self.update_account_state_port
@@ -84,7 +84,7 @@ impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
         self.account_lock.release_account(&source_account_id);
         self.account_lock.release_account(&target_account_id);
 
-        Ok(true)
+        Ok(())
     }
 }
 
@@ -167,7 +167,7 @@ mod tests {
             money_transfer_properties,
         );
 
-        let success = send_money_service.send_money(&command).await.unwrap();
+        let success = send_money_service.send_money(&command).await.is_ok();
         assert_eq!(success, false);
     }
 
@@ -223,7 +223,7 @@ mod tests {
             money_transfer_properties,
         );
 
-        let success = send_money_service.send_money(&command).await.unwrap();
+        let success = send_money_service.send_money(&command).await.is_ok();
         assert_eq!(success, true);
     }
 
@@ -259,7 +259,7 @@ mod tests {
         let cloned = account.clone();
         Account::withdraw.mock_safe(move |curr, money, target| {
             if curr.id == cloned.id {
-                MockResult::Return(true)
+                MockResult::Return(Ok(()))
             } else {
                 MockResult::Continue((curr, money, target))
             }
@@ -270,7 +270,7 @@ mod tests {
         let cloned = account.clone();
         Account::withdraw.mock_safe(move |curr, money, target| {
             if curr.id == cloned.id {
-                MockResult::Return(false)
+                MockResult::Return(Err(anyhow!("Something bad happened")))
             } else {
                 MockResult::Continue((curr, money, target))
             }
@@ -281,7 +281,7 @@ mod tests {
         let cloned = account.clone();
         Account::deposit.mock_safe(move |curr, money, target| {
             if curr.id == cloned.id {
-                MockResult::Return(true)
+                MockResult::Return(Ok(()))
             } else {
                 MockResult::Continue((curr, money, target))
             }

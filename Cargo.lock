@@ -188,6 +188,7 @@ dependencies = [
  "chrono",
  "mockall",
  "mocktopus",
+ "rust_decimal",
  "rusty-money",
  "thiserror",
 ]
@@ -213,6 +214,10 @@ dependencies = [
  "thiserror",
  "uuid",
 ]
+
+[[package]]
+name = "buckpal-web"
+version = "0.1.0"
 
 [[package]]
 name = "bumpalo"
