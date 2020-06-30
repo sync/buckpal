@@ -2,5 +2,6 @@
 
 members = [
     "buckpal-application",
-    "adapters/buckpal-persistence"
+    "adapters/buckpal-persistence",
+    "adapters/buckpal-web"
 ]
