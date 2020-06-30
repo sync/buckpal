@@ -11,6 +11,7 @@ use buckpal_application::domain::activity::Activity;
 use chrono::{DateTime, Utc};
 use sqlx::postgres::PgPool;
 
+#[derive(Debug, Clone)]
 pub struct AccountPersistenceAdapter {
     account_repository: AccountRepository,
     activity_repository: ActivityRepository,
