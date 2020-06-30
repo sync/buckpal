@@ -26,3 +26,6 @@ async-trait = "0.1.36"
 
 [dev-dependencies]
 async-std = { version = "1.6.2", features = ["attributes"] }
+
+[lib]
+doctest = false
