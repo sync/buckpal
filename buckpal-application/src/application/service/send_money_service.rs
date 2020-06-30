@@ -8,18 +8,18 @@ use crate::application::service::money_transfer_properties::MoneyTransferPropert
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 
-pub struct SendMoneyService<'a> {
-    load_account_port: Box<dyn LoadAccountPort + Send + Sync + 'a>,
-    account_lock: Box<dyn AccountLock + Send + Sync + 'a>,
-    update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync + 'a>,
+pub struct SendMoneyService {
+    load_account_port: Box<dyn LoadAccountPort + Send + Sync>,
+    account_lock: Box<dyn AccountLock + Send + Sync>,
+    update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync>,
     money_transfer_properties: MoneyTransferProperties,
 }
 
-impl<'a> SendMoneyService<'a> {
+impl SendMoneyService {
     pub fn new(
-        load_account_port: Box<dyn LoadAccountPort + Send + Sync + 'a>,
-        account_lock: Box<dyn AccountLock + Send + Sync + 'a>,
-        update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync + 'a>,
+        load_account_port: Box<dyn LoadAccountPort + Send + Sync>,
+        account_lock: Box<dyn AccountLock + Send + Sync>,
+        update_account_state_port: Box<dyn UpdateAccountStatePort + Send + Sync>,
         money_transfer_properties: MoneyTransferProperties,
     ) -> Self {
         Self {
@@ -32,7 +32,7 @@ impl<'a> SendMoneyService<'a> {
 }
 
 #[async_trait]
-impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
+impl SendMoneyUseCase for SendMoneyService {
     async fn send_money(&self, command: &SendMoneyCommand) -> Result<()> {
         use chrono::{Duration, Utc};
 
@@ -88,7 +88,7 @@ impl<'a> SendMoneyUseCase for SendMoneyService<'a> {
     }
 }
 
-impl<'a> SendMoneyService<'a> {
+impl SendMoneyService {
     fn check_threshold(&self, command: &SendMoneyCommand) -> Result<()> {
         if command.money > self.money_transfer_properties.maximum_transfer_threshold() {
             let error = ServiceError::ThresholdExceededException {

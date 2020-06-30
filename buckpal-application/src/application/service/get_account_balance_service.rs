@@ -5,12 +5,12 @@ use anyhow::Result;
 use async_trait::async_trait;
 use rusty_money::Money;
 
-pub struct GetAccountBalanceService<'a> {
-    load_account_port: Box<dyn LoadAccountPort + Sync + Send + 'a>,
+pub struct GetAccountBalanceService {
+    load_account_port: Box<dyn LoadAccountPort + Sync + Send>,
 }
 
 #[async_trait]
-impl<'a> GetAccountBalanceQuery for GetAccountBalanceService<'a> {
+impl GetAccountBalanceQuery for GetAccountBalanceService {
     async fn get_account_balance(&self, account_id: &AccountId) -> Result<Money> {
         use chrono::Utc;
 
