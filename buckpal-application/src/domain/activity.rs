@@ -82,7 +82,7 @@ pub mod activity_test_data {
 
         pub fn with_timestamp(&mut self, timestamp: &DateTime<Utc>) -> &mut Self {
             let mut activity = self.activity.clone();
-            activity.timestamp = timestamp.clone();
+            activity.timestamp = *timestamp;
 
             let mut new = self;
             new.activity = activity;
