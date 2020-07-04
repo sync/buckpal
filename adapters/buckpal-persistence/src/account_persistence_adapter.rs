@@ -97,7 +97,8 @@ mod tests {
 
     #[async_std::test]
     async fn load_account() -> Result<()> {
-        let database_url = "postgres://buckpal:buckpal@localhost/buckpal_test";
+        let database_url = std::env::var("DATABASE_URL")
+            .unwrap_or(String::from("postgres://localhost/buckpal_test"));
 
         let pool = PgPool::builder()
             .max_size(5) // maximum number of connections in the pool
@@ -158,7 +159,8 @@ mod tests {
             .with_activity_window(&activity_window)
             .build();
 
-        let database_url = "postgres://buckpal:buckpal@localhost/buckpal_test";
+        let database_url = std::env::var("DATABASE_URL")
+            .unwrap_or(String::from("postgres://localhost/buckpal_test"));
 
         let pool = PgPool::builder()
             .max_size(5) // maximum number of connections in the pool

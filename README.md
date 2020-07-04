@@ -25,19 +25,11 @@ rustup override set nightly
 ## Postgres
 
 ```sh
-# run docker locally
-# and tell to create a buckpal user / database
-docker run --name buckpal-db \
-  -e POSTGRES_PASSWORD=buckpal \
-  -e POSTGRES_USER=buckpal \
-  -e POSTGRES_DB=buckpal \
-  -v buckpal-db-data:/var/lib/postgresql/data \
-  -p 5432:5432 -d postgres:12-alpine
-
-# subsequent time you just have to restart the image
-docker restart buckpal-db
+# run docker locally (only have to do this once)
+brew install postgres
+brew services start postgres
 ```
-## Migrations
+## Postgres Migrations
 
 ```sh
 cargo install sqlx-cli --git https://github.com/launchbadge/sqlx.git --no-default-features --features postgres
@@ -51,5 +43,5 @@ sqlx migrate run
 
 #also create test database
 createdb meet_test
-DATABASE_URL=postgres://buckpal:buckpal@localhost/buckpal_test sqlx migrate run
+DATABASE_URL=postgres://localhost/buckpal_test sqlx migrate run
 ```
