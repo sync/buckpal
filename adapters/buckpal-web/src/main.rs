@@ -97,7 +97,7 @@ fn main() -> Result<()> {
             .await?;
 
         let account_persistence_adapter = AccountPersistenceAdapter::new(pool);
-        let no_op_account_lock = NoOpAccountLock::new();
+        let no_op_account_lock = NoOpAccountLock::default();
         let money_transfer_properties = MoneyTransferProperties::new();
         let send_money_use_case = SendMoneyService::new(
             Box::new(account_persistence_adapter.clone()),
