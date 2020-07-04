@@ -123,10 +123,11 @@ mod tests {
     use mockall::*;
     use mocktopus::mocking::*;
     use rusty_money::{money, Money};
+    use std::sync::Mutex;
 
     #[async_std::test]
     async fn given_withdrawal_fails_then_only_source_account_is_locked_and_released() {
-        let mut load_account_port = MockLoadAccountPort::new();
+        let mut load_account_port = MockLoadAccountPort::default();
         let mut account_lock = MockAccountLock::new();
         let update_account_state_port = MockUpdateAccountStatePort::default();
         let money_transfer_properties = MoneyTransferProperties::default();
@@ -173,7 +174,7 @@ mod tests {
 
     #[async_std::test]
     async fn transation_succeeds() {
-        let mut load_account_port = MockLoadAccountPort::new();
+        let mut load_account_port = MockLoadAccountPort::default();
         let mut account_lock = MockAccountLock::new();
         let mut update_account_state_port = MockUpdateAccountStatePort::default();
         let money_transfer_properties = MoneyTransferProperties::default();
@@ -289,34 +290,57 @@ mod tests {
     }
 
     #[derive(Debug, Default)]
-    struct MockUpdateAccountStatePort {}
+    struct MockUpdateAccountStatePort {
+        expected_updated_account_ids: Mutex<Vec<AccountId>>,
+    }
 
     impl MockUpdateAccountStatePort {
-        fn expect_update_activities(&mut self, _account_ids: Vec<&AccountId>) {
-            // here eventually need to check that update_activities  got call with those ids
+        fn expect_update_activities(&self, account_ids: Vec<&AccountId>) {
+            for account_id in account_ids {
+                self.expected_updated_account_ids
+                    .lock()
+                    .unwrap()
+                    .push(account_id.clone())
+            }
+        }
+    }
+
+    impl Drop for MockUpdateAccountStatePort {
+        fn drop(&mut self) {
+            assert!(
+                self.expected_updated_account_ids.lock().unwrap().len() == 0,
+                "update activities should have been called with the expected account ids"
+            )
         }
     }
 
     #[async_trait]
     impl UpdateAccountStatePort for MockUpdateAccountStatePort {
-        async fn update_activities(&self, _account: &Account) -> Result<Vec<Activity>> {
-            // do nothing here
+        async fn update_activities(&self, account: &Account) -> Result<Vec<Activity>> {
+            let index = self
+                .expected_updated_account_ids
+                .lock()
+                .unwrap()
+                .iter()
+                .position(|item| *item == account.id.clone().unwrap())
+                .unwrap();
+
+            self.expected_updated_account_ids
+                .lock()
+                .unwrap()
+                .remove(index);
+
+            // return nothing here
             Ok(vec![])
         }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Default)]
     struct MockLoadAccountPort {
         available_accounts: Vec<Account>,
     }
 
     impl MockLoadAccountPort {
-        fn new() -> Self {
-            Self {
-                available_accounts: vec![],
-            }
-        }
-
         fn expect_load_account(&mut self, account: &Account) {
             self.available_accounts.push(account.clone());
         }
