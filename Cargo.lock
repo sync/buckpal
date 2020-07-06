@@ -590,6 +590,9 @@ name = "either"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "env_logger"
@@ -1861,7 +1864,7 @@ dependencies = [
 [[package]]
 name = "sqlx"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#921878ad773558059dea199e1ca9baebe654f250"
+source = "git+https://github.com/launchbadge/sqlx#41df13ba5a6506b3175146e0b122b2b78fce1c2e"
 dependencies = [
  "sqlx-core",
  "sqlx-macros",
@@ -1870,7 +1873,7 @@ dependencies = [
 [[package]]
 name = "sqlx-core"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#921878ad773558059dea199e1ca9baebe654f250"
+source = "git+https://github.com/launchbadge/sqlx#41df13ba5a6506b3175146e0b122b2b78fce1c2e"
 dependencies = [
  "atoi",
  "base64",
@@ -1916,9 +1919,10 @@ dependencies = [
 [[package]]
 name = "sqlx-macros"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#921878ad773558059dea199e1ca9baebe654f250"
+source = "git+https://github.com/launchbadge/sqlx#41df13ba5a6506b3175146e0b122b2b78fce1c2e"
 dependencies = [
  "dotenv",
+ "either",
  "futures",
  "heck",
  "hex",
@@ -1926,7 +1930,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_json",
- "sha2 0.8.2",
+ "sha2 0.9.1",
  "sqlx-core",
  "sqlx-rt",
  "syn",
@@ -1936,7 +1940,7 @@ dependencies = [
 [[package]]
 name = "sqlx-rt"
 version = "0.1.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#921878ad773558059dea199e1ca9baebe654f250"
+source = "git+https://github.com/launchbadge/sqlx#41df13ba5a6506b3175146e0b122b2b78fce1c2e"
 dependencies = [
  "async-native-tls",
  "async-std",
