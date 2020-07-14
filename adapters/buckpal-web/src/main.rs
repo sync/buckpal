@@ -15,7 +15,7 @@ use buckpal_application::application::service::{
 use buckpal_application::domain::account::AccountId;
 use buckpal_persistence::account_persistence_adapter::AccountPersistenceAdapter;
 use rusty_money::{money, Money};
-use sqlx::postgres::PgPool;
+use sqlx::postgres::PgPoolOptions;
 use std::env;
 use std::sync::Arc;
 use tide::{security::CorsMiddleware, Error, Request, Response, Server, StatusCode};
@@ -91,9 +91,9 @@ fn main() -> Result<()> {
     let listen_addr = format!("0.0.0.0:{}", port);
 
     smol::block_on(async {
-        let pool = PgPool::builder()
-            .max_size(5) // maximum number of connections in the pool
-            .build(&database_url)
+        let pool = PgPoolOptions::new(&database_url)?
+            .max_connections(5)
+            .connect()
             .await?;
 
         let account_persistence_adapter = AccountPersistenceAdapter::new(pool);

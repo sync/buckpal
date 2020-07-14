@@ -3,119 +3,155 @@
   "2d3bbb77efa214ccfec79394fa8fe6fdbb7a41797e6fd14a219e6a548f2dc564": {
     "query": "\n                DELETE FROM activity WHERE id = $1\n            ",
     "describe": {
-      "params": [
-        "Int4"
-      ],
-      "columns": []
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": []
     }
   },
   "4967797caaa627abae987cec72b908841bf986207ddb3ae9bcd8b18b376ebd17": {
     "query": "\n                SELECT \n                        id,\n                        timestamp,\n                        owner_account_id,\n                        source_account_id,\n                        target_account_id,\n                        amount\n                FROM \n                        activity\n                WHERE \n                        owner_account_id = $1\n                AND\n                        timestamp >= $2\n            ",
     "describe": {
-      "params": [
-        "Int4",
-        "Timestamptz"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 1,
           "name": "timestamp",
-          "type_info": "Timestamptz",
-          "not_null": true
+          "type_info": "Timestamptz"
         },
         {
+          "ordinal": 2,
           "name": "owner_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 3,
           "name": "source_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 4,
           "name": "target_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 5,
           "name": "amount",
-          "type_info": "Int8",
-          "not_null": true
+          "type_info": "Int8"
         }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Timestamptz"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
       ]
     }
   },
   "69bebe625b3f88a9ffc23d82dd20f9884bffb9f81b9ab5d97d0d74ed84c14fe5": {
     "query": "\n                SELECT\n                        SUM (amount) AS total\n                FROM\n                        activity\n                WHERE\n                        target_account_id = $1\n                AND \n                        owner_account_id = $1\n                AND     \n                        timestamp < $2\n           ",
     "describe": {
-      "params": [
-        "Int4",
-        "Timestamptz"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "total",
-          "type_info": "Numeric",
-          "not_null": null
+          "type_info": "Numeric"
         }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Timestamptz"
+        ]
+      },
+      "nullable": [
+        null
       ]
     }
   },
   "9f3e43371fca6ebce6106f651b889c82dbf5e49d971050e14b71170b751402a4": {
     "query": "\n                DELETE FROM account WHERE id = $1 \n            ",
     "describe": {
-      "params": [
-        "Int4"
-      ],
-      "columns": []
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": []
     }
   },
   "cae54719611a87631803d65128c7379fbd80843c08db932aced52957f31ea268": {
     "query": "\n                INSERT INTO account DEFAULT VALUES RETURNING id \n            ",
     "describe": {
-      "params": [],
       "columns": [
         {
+          "ordinal": 0,
           "name": "id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false
       ]
     }
   },
   "dc77cfbbb1078774c26909355c8986b4baa3fa9f684e57202f921a254d200f33": {
     "query": "\n                SELECT\n                        id \n                FROM \n                        account\n                WHERE \n                        id = $1\n            ",
     "describe": {
-      "params": [
-        "Int4"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false
       ]
     }
   },
   "e6f6466188b9fefccf336142c387c04e90fa9701b3b075631005aec39619a0b6": {
     "query": "\n                SELECT\n                        SUM (amount) AS total\n                FROM\n                        activity\n                WHERE\n                        source_account_id = $1\n                AND \n                        owner_account_id = $1\n                AND     \n                        timestamp < $2\n           ",
     "describe": {
-      "params": [
-        "Int4",
-        "Timestamptz"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "total",
-          "type_info": "Numeric",
-          "not_null": null
+          "type_info": "Numeric"
         }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Timestamptz"
+        ]
+      },
+      "nullable": [
+        null
       ]
     }
   },
@@ -126,44 +162,32 @@
         {
           "ordinal": 0,
           "name": "id",
-          "type_info": "Int4",
-          "relation_id": 16528,
-          "relation_attribute_no": 1
+          "type_info": "Int4"
         },
         {
           "ordinal": 1,
           "name": "timestamp",
-          "type_info": "Timestamptz",
-          "relation_id": 16528,
-          "relation_attribute_no": 2
+          "type_info": "Timestamptz"
         },
         {
           "ordinal": 2,
           "name": "owner_account_id",
-          "type_info": "Int4",
-          "relation_id": 16528,
-          "relation_attribute_no": 3
+          "type_info": "Int4"
         },
         {
           "ordinal": 3,
           "name": "source_account_id",
-          "type_info": "Int4",
-          "relation_id": 16528,
-          "relation_attribute_no": 4
+          "type_info": "Int4"
         },
         {
           "ordinal": 4,
           "name": "target_account_id",
-          "type_info": "Int4",
-          "relation_id": 16528,
-          "relation_attribute_no": 5
+          "type_info": "Int4"
         },
         {
           "ordinal": 5,
           "name": "amount",
-          "type_info": "Int8",
-          "relation_id": 16528,
-          "relation_attribute_no": 6
+          "type_info": "Int8"
         }
       ],
       "parameters": {
@@ -188,40 +212,50 @@
   "fec96025fba091cb33f117ec514097bc2aba0f921d43c23ab95a9b043c56a47f": {
     "query": "\n                SELECT \n                        id,\n                        timestamp,\n                        owner_account_id,\n                        source_account_id,\n                        target_account_id,\n                        amount\n                FROM \n                        activity\n                WHERE \n                        id = $1\n            ",
     "describe": {
-      "params": [
-        "Int4"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 1,
           "name": "timestamp",
-          "type_info": "Timestamptz",
-          "not_null": true
+          "type_info": "Timestamptz"
         },
         {
+          "ordinal": 2,
           "name": "owner_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 3,
           "name": "source_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 4,
           "name": "target_account_id",
-          "type_info": "Int4",
-          "not_null": true
+          "type_info": "Int4"
         },
         {
+          "ordinal": 5,
           "name": "amount",
-          "type_info": "Int8",
-          "not_null": true
+          "type_info": "Int8"
         }
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
       ]
     }
   }
