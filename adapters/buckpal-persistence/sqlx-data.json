@@ -1,36 +1,5 @@
 {
   "db": "PostgreSQL",
-  "038e36aec513736597fa7cb9b44ee46a3e642fb48c274300cb5de904ab733f9b": {
-    "query": "\n                DELETE FROM activity WHERE id IN ($1)\n            ",
-    "describe": {
-      "params": [
-        "Int4"
-      ],
-      "columns": []
-    }
-  },
-  "22f63a07db1b4a83f5f42b06d789d6b4f5440ed69b4016d66aefd1fc3535bc2e": {
-    "query": "\n                SELECT\n                        COUNT (*) AS total\n                FROM\n                        activity\n           ",
-    "describe": {
-      "params": [],
-      "columns": [
-        {
-          "name": "total",
-          "type_info": "Int8",
-          "not_null": null
-        }
-      ]
-    }
-  },
-  "2c8bec132d99ac60c1177aea022ab79eb15b2222e65d983ab76d227fac22b594": {
-    "query": "\n                DELETE FROM account WHERE id = $1; \n            ",
-    "describe": {
-      "params": [
-        "Int4"
-      ],
-      "columns": []
-    }
-  },
   "2d3bbb77efa214ccfec79394fa8fe6fdbb7a41797e6fd14a219e6a548f2dc564": {
     "query": "\n                DELETE FROM activity WHERE id = $1\n            ",
     "describe": {
@@ -153,54 +122,67 @@
   "e7fe4493b66f61ccb48943ed6569455e3c258c74b8f7a9fe16d96d4af502e07f": {
     "query": "\n                        INSERT INTO \n                                    activity (timestamp, owner_account_id, source_account_id, target_account_id, amount)\n                        VALUES \n                                    ($1, $2, $3, $4, $5)\n                        RETURNING \n                                    id, timestamp, owner_account_id, source_account_id, target_account_id, amount \n                    ",
     "describe": {
-      "params": [
-        "Timestamptz",
-        "Int4",
-        "Int4",
-        "Int4",
-        "Int8"
-      ],
       "columns": [
         {
+          "ordinal": 0,
           "name": "id",
           "type_info": "Int4",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 1
         },
         {
+          "ordinal": 1,
           "name": "timestamp",
           "type_info": "Timestamptz",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 2
         },
         {
+          "ordinal": 2,
           "name": "owner_account_id",
           "type_info": "Int4",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 3
         },
         {
+          "ordinal": 3,
           "name": "source_account_id",
           "type_info": "Int4",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 4
         },
         {
+          "ordinal": 4,
           "name": "target_account_id",
           "type_info": "Int4",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 5
         },
         {
+          "ordinal": 5,
           "name": "amount",
           "type_info": "Int8",
-          "not_null": true
+          "relation_id": 16528,
+          "relation_attribute_no": 6
         }
-      ]
-    }
-  },
-  "eb366dee13ad5dea83b55a66a3efe6b6ff25fbb3c86e14716396a2040a7ced04": {
-    "query": "\n                DELETE FROM activity WHERE id IN ($1) \n            ",
-    "describe": {
-      "params": [
-        "Int4"
       ],
-      "columns": []
+      "parameters": {
+        "Left": [
+          "Timestamptz",
+          "Int4",
+          "Int4",
+          "Int4",
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
     }
   },
   "fec96025fba091cb33f117ec514097bc2aba0f921d43c23ab95a9b043c56a47f": {
