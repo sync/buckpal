@@ -93,16 +93,16 @@ mod tests {
     use buckpal_application::domain::account::AccountId;
     use chrono::{DateTime, NaiveDate, Utc};
     use rusty_money::{money, Money};
-    use sqlx::postgres::PgPool;
+    use sqlx::postgres::{PgPool, PgPoolOptions};
 
     #[async_std::test]
     async fn load_account() -> Result<()> {
         let database_url = std::env::var("DATABASE_URL")
             .unwrap_or(String::from("postgres://localhost/buckpal_test"));
 
-        let pool = PgPool::builder()
-            .max_size(5) // maximum number of connections in the pool
-            .build(&database_url)
+        let pool = PgPoolOptions::new()
+            .max_connections(5)
+            .connect(&database_url)
             .await
             .unwrap();
 
@@ -162,9 +162,9 @@ mod tests {
         let database_url = std::env::var("DATABASE_URL")
             .unwrap_or(String::from("postgres://localhost/buckpal_test"));
 
-        let pool = PgPool::builder()
-            .max_size(5) // maximum number of connections in the pool
-            .build(&database_url)
+        let pool = PgPoolOptions::new()
+            .max_connections(5)
+            .connect(&database_url)
             .await
             .unwrap();
 
