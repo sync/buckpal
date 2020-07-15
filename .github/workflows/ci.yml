@@ -50,7 +50,7 @@ jobs:
           PGUSER: buckpal
           PGPASSWORD: buckpal
 
-      - name: Create test db
+      - name: Migrate test db
         run: sqlx migrate run
 
       - name: Cache cargo registry
