@@ -42,6 +42,6 @@ sqlx migrate add your_migration_name
 sqlx migrate run
 
 #also create test database
-createdb meet_test
+createdb buckpal_test
 DATABASE_URL=postgres://localhost/buckpal_test sqlx migrate run
 ```
