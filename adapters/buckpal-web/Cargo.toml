@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "chrono", "offline", "bigdecimal"] }
-smol = "0.1.18"
+smol = "0.2.0"
 dotenv = "0.15.0"
 env_logger = "0.7.1"
 log = "0.4.11"
