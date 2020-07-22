@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "sqlx"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#e4dc040620e164d6431094498388d141aab7bf1a"
+source = "git+https://github.com/launchbadge/sqlx#d79335d9553a20530247c54bcc1199f39eb301f2"
 dependencies = [
  "sqlx-core",
  "sqlx-macros",
@@ -1888,7 +1888,7 @@ dependencies = [
 [[package]]
 name = "sqlx-core"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#e4dc040620e164d6431094498388d141aab7bf1a"
+source = "git+https://github.com/launchbadge/sqlx#d79335d9553a20530247c54bcc1199f39eb301f2"
 dependencies = [
  "atoi",
  "base64",
@@ -1935,7 +1935,7 @@ dependencies = [
 [[package]]
 name = "sqlx-macros"
 version = "0.4.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#e4dc040620e164d6431094498388d141aab7bf1a"
+source = "git+https://github.com/launchbadge/sqlx#d79335d9553a20530247c54bcc1199f39eb301f2"
 dependencies = [
  "dotenv",
  "either",
@@ -1956,7 +1956,7 @@ dependencies = [
 [[package]]
 name = "sqlx-rt"
 version = "0.1.0-pre"
-source = "git+https://github.com/launchbadge/sqlx#e4dc040620e164d6431094498388d141aab7bf1a"
+source = "git+https://github.com/launchbadge/sqlx#d79335d9553a20530247c54bcc1199f39eb301f2"
 dependencies = [
  "async-native-tls",
  "async-std",
