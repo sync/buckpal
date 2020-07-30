@@ -12,7 +12,7 @@ sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "c
 chrono = "0.4.13"
 anyhow = "1.0.32"
 thiserror = "1.0.20"
-rusty-money = "0.3.4"
+rusty-money = "0.3.5"
 rust_decimal = "1.7.0"
 bigdecimal = "0.1.2"
 async-trait = "0.1.36"

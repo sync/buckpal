@@ -1536,9 +1536,9 @@ dependencies = [
 
 [[package]]
 name = "rust_decimal_macro_impls"
-version = "1.6.0"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "591baf40c0fddca9b98af30b519151465a73e3ecbbccba60ca64fa7e8039a422"
+checksum = "b38b60a3969c3ec5e8417710c919590a33c45b00d236399adcf9b99cd37f4a8d"
 dependencies = [
  "proc-macro-hack",
  "quote",
@@ -1547,9 +1547,9 @@ dependencies = [
 
 [[package]]
 name = "rust_decimal_macros"
-version = "1.6.0"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "974cfec90361b4e024ee72e580afd2f2cf52c656dba5c4937eb5a61a42d01593"
+checksum = "caa8dcbedfe7eebcbd4e5e182869f9fba4adc74b21fb4a9f409a26cf5d52fb12"
 dependencies = [
  "proc-macro-hack",
  "rust_decimal",
@@ -1573,9 +1573,9 @@ dependencies = [
 
 [[package]]
 name = "rusty-money"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "829de97b7088b6b6c4d71eb6b190b7241881994ea8ace363ea977cfa878fcc0f"
+checksum = "e0d2c451494a3c0fd40c8007d611257692f61d5320f01772a0c982a37802a7de"
 dependencies = [
  "lazy_static",
  "rust_decimal",
