@@ -18,8 +18,9 @@ use rusty_money::{money, Money};
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 use std::sync::Arc;
-use tide::{security::CorsMiddleware, Error, Request, Response, Server, StatusCode};
+use tide::{security::CorsMiddleware, Error, ParamError, Request, Response, Server, StatusCode};
 
+#[derive(Clone)]
 struct AppState {
     send_money_use_case: Arc<dyn SendMoneyUseCase + Send + Sync>,
 }
@@ -35,7 +36,7 @@ impl AppState {
 fn validate_accounts_send_params(req: &Request<AppState>) -> tide::Result<(i32, i32, i64)> {
     let source_account_id: i32 =
         req.param("sourceAccountId")
-            .map_err(|err: std::num::ParseIntError| {
+            .map_err(|err: ParamError<std::num::ParseIntError>| {
                 Error::from_str(
                     StatusCode::UnprocessableEntity,
                     format!("Invalid sourceAccountId: {}", err.to_string()),
@@ -44,7 +45,7 @@ fn validate_accounts_send_params(req: &Request<AppState>) -> tide::Result<(i32, 
 
     let target_account_id: i32 =
         req.param("targetAccountId")
-            .map_err(|err: std::num::ParseIntError| {
+            .map_err(|err: ParamError<std::num::ParseIntError>| {
                 Error::from_str(
                     StatusCode::UnprocessableEntity,
                     format!("Invalid targetAccountId: {}", err.to_string()),
@@ -53,7 +54,7 @@ fn validate_accounts_send_params(req: &Request<AppState>) -> tide::Result<(i32, 
 
     let amount: i64 = req
         .param("amount")
-        .map_err(|err: std::num::ParseIntError| {
+        .map_err(|err: ParamError<std::num::ParseIntError>| {
             Error::from_str(
                 StatusCode::UnprocessableEntity,
                 format!("Invalid amount: {}", err.to_string()),
