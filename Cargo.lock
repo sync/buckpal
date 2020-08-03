@@ -351,7 +351,6 @@ dependencies = [
  "rusty-money",
  "serde",
  "serde_json",
- "smol",
  "sqlx",
  "thiserror",
  "tide",

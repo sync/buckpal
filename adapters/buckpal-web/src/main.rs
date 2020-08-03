@@ -82,7 +82,8 @@ async fn handle_accounts_send(req: Request<AppState>) -> tide::Result<Response> 
     success_to_res("Money Sent!")
 }
 
-fn main() -> Result<()> {
+#[async_std::main]
+async fn main() -> Result<()> {
     dotenv::dotenv()?;
     env_logger::init();
 
@@ -90,37 +91,35 @@ fn main() -> Result<()> {
     let port = env::var("PORT").unwrap_or_else(|_| String::from("6000"));
     let listen_addr = format!("0.0.0.0:{}", port);
 
-    smol::block_on(async {
-        let pool = PgPoolOptions::new()
-            .max_connections(5)
-            .connect(&database_url)
-            .await?;
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&database_url)
+        .await?;
 
-        let account_persistence_adapter = AccountPersistenceAdapter::new(pool);
-        let no_op_account_lock = NoOpAccountLock::default();
-        let money_transfer_properties = MoneyTransferProperties::new();
-        let send_money_use_case = SendMoneyService::new(
-            Box::new(account_persistence_adapter.clone()),
-            Box::new(no_op_account_lock),
-            Box::new(account_persistence_adapter),
-            money_transfer_properties,
-        );
+    let account_persistence_adapter = AccountPersistenceAdapter::new(pool);
+    let no_op_account_lock = NoOpAccountLock::default();
+    let money_transfer_properties = MoneyTransferProperties::new();
+    let send_money_use_case = SendMoneyService::new(
+        Box::new(account_persistence_adapter.clone()),
+        Box::new(no_op_account_lock),
+        Box::new(account_persistence_adapter),
+        money_transfer_properties,
+    );
 
-        let app_state = AppState::new(Arc::new(send_money_use_case));
+    let app_state = AppState::new(Arc::new(send_money_use_case));
 
-        let mut app = Server::with_state(app_state);
+    let mut app = Server::with_state(app_state);
 
-        let cors = CorsMiddleware::new();
+    let cors = CorsMiddleware::new();
 
-        app.middleware(cors);
+    app.middleware(cors);
 
-        app.at("/accounts/send/:sourceAccountId/:targetAccountId/:amount")
-            .post(handle_accounts_send);
+    app.at("/accounts/send/:sourceAccountId/:targetAccountId/:amount")
+        .post(handle_accounts_send);
 
-        info!("Starting at: {}", listen_addr);
+    info!("Starting at: {}", listen_addr);
 
-        app.listen(listen_addr).await?;
+    app.listen(listen_addr).await?;
 
-        Ok(())
-    })
+    Ok(())
 }
