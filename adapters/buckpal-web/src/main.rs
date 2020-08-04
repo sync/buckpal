@@ -113,7 +113,7 @@ async fn main() -> Result<()> {
 
     let cors = CorsMiddleware::new();
 
-    app.middleware(cors);
+    app.with(cors);
 
     app.at("/accounts/send/:sourceAccountId/:targetAccountId/:amount")
         .post(handle_accounts_send);
