@@ -190,8 +190,7 @@ mod tests {
     }
 
     async fn find_activity(activity_id: i32, pool: &PgPool) -> Result<ActivityEntity> {
-        let entity = sqlx::query_as!(
-            ActivityEntity,
+        let entity = sqlx::query!(
             r#"
                 SELECT 
                         id,
@@ -209,6 +208,15 @@ mod tests {
         )
         .fetch_one(pool)
         .await?;
+
+        let entity = ActivityEntity::new(
+            Some(entity.id),
+            entity.timestamp,
+            entity.owner_account_id,
+            entity.source_account_id,
+            entity.target_account_id,
+            entity.amount,
+        );
 
         Ok(entity)
     }

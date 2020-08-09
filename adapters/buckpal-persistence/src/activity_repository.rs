@@ -28,8 +28,7 @@ impl ActivityRepository {
                 activity_id
             ))),
             None => {
-                let entity = sqlx::query_as!(
-                    ActivityEntity,
+                let entity = sqlx::query!(
                     r#"
                         INSERT INTO 
                                     activity (timestamp, owner_account_id, source_account_id, target_account_id, amount)
@@ -47,6 +46,15 @@ impl ActivityRepository {
                 .fetch_one(&self.pool)
                 .await?;
 
+                let entity = ActivityEntity::new(
+                    Some(entity.id),
+                    entity.timestamp,
+                    entity.owner_account_id,
+                    entity.source_account_id,
+                    entity.target_account_id,
+                    entity.amount,
+                );
+
                 Ok(entity)
             }
         }
@@ -57,8 +65,7 @@ impl ActivityRepository {
         owner_account_id: i32,
         since: &DateTime<Utc>,
     ) -> Result<Vec<ActivityEntity>> {
-        let entitites = sqlx::query_as!(
-            ActivityEntity,
+        let entitites = sqlx::query!(
             r#"
                 SELECT 
                         id,
@@ -79,6 +86,20 @@ impl ActivityRepository {
         )
         .fetch_all(&self.pool)
         .await?;
+
+        let entitites = entitites
+            .into_iter()
+            .map(|entity| {
+                ActivityEntity::new(
+                    Some(entity.id),
+                    entity.timestamp,
+                    entity.owner_account_id,
+                    entity.source_account_id,
+                    entity.target_account_id,
+                    entity.amount,
+                )
+            })
+            .collect();
 
         Ok(entitites)
     }
