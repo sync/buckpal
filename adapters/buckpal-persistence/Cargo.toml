@@ -19,7 +19,7 @@ async-trait = "0.1.37"
 buckpal-application = { path = "../../buckpal-application" }
 
 [dev-dependencies]
-async-std = { version = "1.6.2", features = ["attributes"] }
+async-std = { version = "1.6.3", features = ["attributes"] }
 
 [lib]
 doctest = false
