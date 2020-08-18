@@ -15,7 +15,7 @@ thiserror = "1.0.20"
 rusty-money = "0.3.5"
 rust_decimal = "1.7.0"
 bigdecimal = "0.1.2"
-async-trait = "0.1.37"
+async-trait = "0.1.38"
 buckpal-application = { path = "../../buckpal-application" }
 
 [dev-dependencies]
