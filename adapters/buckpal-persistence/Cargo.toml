@@ -14,7 +14,7 @@ anyhow = "1.0.32"
 thiserror = "1.0.20"
 rusty-money = "0.3.5"
 rust_decimal = "1.7.0"
-bigdecimal = "0.1.2"
+bigdecimal = "0.2.0"
 async-trait = "0.1.40"
 buckpal-application = { path = "../../buckpal-application" }
 
