@@ -18,7 +18,7 @@ rust_decimal = "1.8.1"
 [dev-dependencies]
 mockall = "0.8.1"
 mocktopus = "0.7.5"
-async-std = { version = "1.6.4", features = ["attributes"] }
+async-std = { version = "1.6.5", features = ["attributes"] }
 
 [lib]
 doctest = false
