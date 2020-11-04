@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.15"
 rusty-money  = "0.3.5"
-thiserror = "1.0.20"
+thiserror = "1.0.22"
 anyhow = "1.0.32"
 cfg-if = "0.1.10"
 async-trait = "0.1.40"
