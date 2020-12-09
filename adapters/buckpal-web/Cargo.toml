@@ -12,7 +12,7 @@ dotenv = "0.15.0"
 env_logger = "0.7.1"
 log = "0.4.11"
 anyhow = "1.0.32"
-thiserror = "1.0.20"
+thiserror = "1.0.22"
 buckpal-application = { path = "../../buckpal-application" }
 buckpal-persistence = { path = "../buckpal-persistence" }
 tide = "0.13.0"
