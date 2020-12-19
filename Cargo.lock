@@ -457,7 +457,7 @@ dependencies = [
  "anyhow",
  "async-std",
  "async-trait",
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "chrono",
  "mockall",
  "mocktopus",
