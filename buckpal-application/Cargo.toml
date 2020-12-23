@@ -16,7 +16,7 @@ async-trait = "0.1.42"
 rust_decimal = "1.8.1"
 
 [dev-dependencies]
-mockall = "0.8.1"
+mockall = "0.9.0"
 mocktopus = "0.7.6"
 async-std = { version = "1.8.0", features = ["attributes"] }
 
