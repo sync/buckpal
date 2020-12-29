@@ -10,7 +10,7 @@ exclude = ["test/*"]
 [dependencies]
 sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "chrono", "offline", "bigdecimal"] }
 chrono = "0.4.19"
-anyhow = "1.0.32"
+anyhow = "1.0.37"
 thiserror = "1.0.22"
 rusty-money = "0.3.5"
 rust_decimal = "1.8.1"
