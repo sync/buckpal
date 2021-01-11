@@ -11,7 +11,7 @@ sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "c
 dotenv = "0.15.0"
 env_logger = "0.8.2"
 log = "0.4.11"
-anyhow = "1.0.32"
+anyhow = "1.0.38"
 thiserror = "1.0.22"
 buckpal-application = { path = "../../buckpal-application" }
 buckpal-persistence = { path = "../buckpal-persistence" }
