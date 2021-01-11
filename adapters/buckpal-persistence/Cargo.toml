@@ -11,7 +11,7 @@ exclude = ["test/*"]
 sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "chrono", "offline", "bigdecimal"] }
 chrono = "0.4.19"
 anyhow = "1.0.38"
-thiserror = "1.0.22"
+thiserror = "1.0.23"
 rusty-money = "0.3.6"
 rust_decimal = "1.8.1"
 bigdecimal = "0.2.0"
