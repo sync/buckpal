@@ -13,7 +13,7 @@ chrono = "0.4.19"
 anyhow = "1.0.38"
 thiserror = "1.0.23"
 rusty-money = "0.3.6"
-rust_decimal = "1.9.0"
+rust_decimal = "1.10.0"
 bigdecimal = "0.2.0"
 async-trait = "0.1.42"
 buckpal-application = { path = "../../buckpal-application" }
