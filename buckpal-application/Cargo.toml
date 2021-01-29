@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 chrono = "0.4.19"
-rusty-money  = "0.3.6"
+rusty-money  = "0.4.1"
 thiserror = "1.0.23"
 anyhow = "1.0.38"
 cfg-if = "1.0.0"

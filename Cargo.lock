@@ -1664,9 +1664,9 @@ dependencies = [
 
 [[package]]
 name = "rust_decimal_macros"
-version = "1.8.1"
+version = "1.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5edf059b3f9aaceab5402cea5565ccc567aff559a519a9f180374528ae3a2db"
+checksum = "23ef86ba9162ebad914872c1162ce0845a490213ff3f2bf97193f815b5330c4d"
 dependencies = [
  "quote",
  "rust_decimal",
@@ -1689,11 +1689,10 @@ dependencies = [
 
 [[package]]
 name = "rusty-money"
-version = "0.3.6"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94d1465869b5a28ff9e1f700555053419efea6d064c6db01a7ed86a3616a04d2"
+checksum = "5b28f881005eac7ad8d46b6f075da5f322bd7f4f83a38720fc069694ddadd683"
 dependencies = [
- "lazy_static",
  "rust_decimal",
  "rust_decimal_macros",
 ]
