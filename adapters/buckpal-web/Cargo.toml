@@ -10,7 +10,7 @@ edition = "2018"
 sqlx = { git = "https://github.com/launchbadge/sqlx", features = ["postgres", "chrono", "offline", "bigdecimal"] }
 dotenv = "0.15.0"
 env_logger = "0.8.2"
-log = "0.4.13"
+log = "0.4.17"
 anyhow = "1.0.38"
 thiserror = "1.0.23"
 buckpal-application = { path = "../../buckpal-application" }
